@@ -4,20 +4,20 @@ const knex = require('../../Utils/database').knex;
 const Bookshelf = require('bookshelf')(knex);
 const Task = require('../../Models/task');
 class Book {
-    async fetchUser(req,res) {
-        try {
-            let val = await User.where({ id: req.query.id }).fetch({withRelated: ['tasks'], require: true});
-            console.log(val.toJSON());
-            return res.json(val);
-        } catch (err) {
-            return res.status(500).json({ 
-                error: true, 
-                data: { message: err.message } 
-            });
-        }
+    
+    async transaction_fetch(req,res){
+        Bookshelf.transaction((t) => {
+            return Promise.resolve(
+                User.where({ id: req.query.id }).fetch({withRelated: ['tasks'], require: true},{transacting:t})
+            )
+        }).then((user)=>{
+            return res.json(user)
+        }).catch((err)=>{
+            console.log(err)
+            return res.json(err)
+        })
     }
-
-    async transaction_test(req,res) {
+    async transaction_insert(req,res) {
         Bookshelf.transaction((t) => {
             return new User({name: req.query.user})
             .save(null, {transacting : t})
@@ -29,10 +29,45 @@ class Book {
                 })
             })
         }).then((user)=>{
-            console.log("works")
+            console.log("Inserted")
             return res.send(user);
         }).catch((err)=>{
             console.log("err"+err)
+        })
+    }
+
+    async transaction_update(req,res) {
+        Bookshelf.transaction((t)=>{
+            return User.forge({id:req.query.id,name:req.body.name})
+            .save()
+            .tap(function(model) {
+                return Promise.map([
+                    req.body.tasks
+                ],(info)=>{
+                    return new Task(info).save({'user_id':model.id},{transacting:t})
+                })
+            })
+        }).then((user)=>{
+            console.log("Updated")
+            return res.send(user);
+        }).catch((err)=>{
+            console.log("err"+err)
+        })
+    }
+
+    async transaction_delete(req,res) {
+        Bookshelf.transaction((t) => {
+            return Promise.resolve(
+                User.forge({id:req.query.id})
+                .fetch({require:true},{transacting:t})
+                .then(function(row){
+                    return row.destroy({transacting:t});
+                })
+            )
+        }).then((user) => {
+            res.status(200).send({error:false,data:"record deleted"})
+        }).catch((err)=>{
+            console.log(err)
         })
     }
 
