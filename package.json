@@ -1,0 +1,30 @@
+{
+  "name": "simple-book-management-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App/App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mugil-Pandian-Eunimart/Simple-Book-Management-System.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mugil-Pandian-Eunimart/Simple-Book-Management-System/issues"
+  },
+  "homepage": "https://github.com/Mugil-Pandian-Eunimart/Simple-Book-Management-System#readme",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "bookshelf": "^1.2.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "knex": "^0.95.7",
+    "mysql2": "^2.2.5",
+    "nodemon": "^2.0.12"
+  }
+}
