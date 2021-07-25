@@ -14,7 +14,7 @@ class Book {
             return res.json(user)
         }).catch((err)=>{
             console.log(err)
-            return res.json(err)
+            res.status(500).send({error:true,data:err})
         })
     }
     async transaction_insert(req,res) {
@@ -32,7 +32,8 @@ class Book {
             console.log("Inserted")
             return res.send(user);
         }).catch((err)=>{
-            console.log("err"+err)
+            console.log(err)
+            res.status(500).send({error:true,data:err})
         })
     }
 
@@ -51,7 +52,8 @@ class Book {
             console.log("Updated")
             return res.send(user);
         }).catch((err)=>{
-            console.log("err"+err)
+            console.log(err)
+            res.status(500).send({error:true,data:err})
         })
     }
 
@@ -68,6 +70,7 @@ class Book {
             res.status(200).send({error:false,data:"record deleted"})
         }).catch((err)=>{
             console.log(err)
+            res.status(500).send({error:true,data:err})
         })
     }
 
